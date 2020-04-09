@@ -16,13 +16,6 @@ import UserSignOut from './components/UserSignOut';
 import NotFound from './components/NotFound';
 
 export default class App extends Component {
-  // fetch('http://localhost:5000/api/courses')
-  //   .then((response) => {
-  //     return response.json();
-  //   })
-  //   .then((data) => {
-  //     console.log(data);
-  //   });
 
   render() {
     return (

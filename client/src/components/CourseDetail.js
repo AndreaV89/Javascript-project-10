@@ -2,12 +2,35 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 export default class CoursesDetail extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      course: {},
+      owner: {}
+    }
+  }
+
+  async componentDidMount() {
+    try {
+      const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
+      const data = await response.json();
+      this.setState({
+        course: data,
+        owner: data.owner,
+      });
+      console.log(this.state.owner);
+    } catch (error) {
+      console.log('Error fetching and parsing data', error);
+    }
+  }
+
   render() {
     return (
       <div>
       <div className="actions--bar">
         <div className="bounds">
-          <div className="grid-100"><span><Link className="button" to="/updateCourse">Update Course</Link><Link className="button" to="/">Delete Course</Link></span><Link
+          <div className="grid-100"><span><Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link><Link className="button" to="/">Delete Course</Link></span><Link
               className="button button-secondary" to="/">Return to List</Link></div>
         </div>
       </div>
@@ -15,8 +38,8 @@ export default class CoursesDetail extends Component {
         <div className="grid-66">
           <div className="course--header">
             <h4 className="course--label">Course</h4>
-            <h3 className="course--title">Build a Basic Bookcase</h3>
-            <p>By Joe Smith</p>
+            <h3 className="course--title">{this.state.course.title}</h3>
+            <p>By {this.state.owner.firstName} {this.state.owner.lastName}</p>
           </div>
           <div className="course--description">
             <p>High-end furniture projects are great to dream about. But unless you have a well-equipped shop and some serious woodworking experience to draw on, it can be difficult to turn the dream into a reality.</p>
