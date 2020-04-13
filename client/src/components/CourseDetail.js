@@ -35,7 +35,6 @@ export default class CoursesDetail extends Component {
   render() {
     const { context } = this.props;
     const authUser = context.authenticatedUser;
-    console.log(authUser);
 
     return (
       <div>

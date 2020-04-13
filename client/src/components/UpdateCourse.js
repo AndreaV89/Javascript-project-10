@@ -1,7 +1,38 @@
 import React, { Component } from 'react';
 
 export default class UpdateCourse extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      course: {},
+      owner: {}
+    }
+  }
+
+  async componentDidMount() {
+    try {
+      const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
+      const data = await response.json();
+      this.setState({
+        course: data,
+        owner: data.owner,
+      });
+      console.log(this.state.owner);
+    } catch (error) {
+      console.log('Error fetching and parsing data', error);
+    }
+  }
+
   render() {
+    const course = {
+      title: this.state.course.title,
+      description: this.state.course.description,
+      estimatedTime: this.state.course.estimatedTime,
+      materialsNeeded: this.state.course.materialsNeeded,
+    };
+
+
     return (
       <div className="bounds course--detail">
       <h1>Update Course</h1>
@@ -10,8 +41,16 @@ export default class UpdateCourse extends Component {
           <div className="grid-66">
             <div className="course--header">
               <h4 className="course--label">Course</h4>
-              <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
-                  value="Build a Basic Bookcase" /></div>
+              <div>
+                <input 
+                  id="title" 
+                  name="title" 
+                  type="text" 
+                  className="input-title course--title--input" 
+                  placeholder="Course title..."
+                  onChange={this.change}
+                  value={course.title} />
+              </div>
               <p>By Joe Smith</p>
             </div>
             <div className="course--description">
@@ -58,5 +97,16 @@ The specifications that follow will produce a bookcase with overall dimensions o
       </div>
     </div>
     );
+  }
+
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      };
+    });
   }
 };

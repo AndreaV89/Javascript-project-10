@@ -6,7 +6,8 @@ const Context = React.createContext();
 export class Provider extends Component {
 
   state = {
-    authenticatedUser: null
+    authenticatedUser: null,
+    password: null
   }
 
   constructor() {
@@ -16,9 +17,11 @@ export class Provider extends Component {
 
   render() {
     const { authenticatedUser } = this.state;
+    const password = this.state.password;
 
     const value = {
       authenticatedUser,
+      password,
       data: this.data,
       actions: {
         signIn: this.signIn,
@@ -34,12 +37,13 @@ export class Provider extends Component {
   }
 
   
-  signIn = async (username, password) => {
-    const user = await this.data.getUser(username, password);
+  signIn = async (emailAddress, password) => {
+    const user = await this.data.getUser(emailAddress, password);
     if (user !== null) {
       this.setState(() => {
         return {
           authenticatedUser: user,
+          password: password,
         };
       });
     }
@@ -48,7 +52,10 @@ export class Provider extends Component {
   }
 
   signOut = () => {
-    this.setState({ authenticatedUser: null });
+    this.setState({ 
+      authenticatedUser: null,
+      password: null,
+    });
   }
 }
 
