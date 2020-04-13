@@ -83,7 +83,7 @@ router.get('/', (req, res) => {
 
 // GET request to /users to return the currently authenticated user
 router.get('/users', authenticateUser, asyncHandler (async (req, res) => {
-  const user = await User.findAll({
+  const user = await User.findOne({
     attributes: ['id', 'firstName', 'lastName', 'emailAddress'],
     where: { id: req.currentUser.id }
   });
@@ -93,17 +93,17 @@ router.get('/users', authenticateUser, asyncHandler (async (req, res) => {
 // POST request to /users to create a user
 router.post('/users', [
   check('firstName')
-    .exists()
-    .withMessage('Please provide a value for "firstName"'),
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "First Name"'),
   check('lastName')
-    .exists()
-    .withMessage('Please provide a value for "lastName"'),
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "Last Name"'),
   check('emailAddress')
-    .isEmail()
-    .withMessage('Please provide a valid email address for "emailAddress"'),
+    .isEmail({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a valid email address for "Email Address"'),
   check('password')
-    .exists()
-    .withMessage('Please provide a value for "password"'),
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "Password"'),
 ], asyncHandler (async (req, res) => {
   // Attempt to get the validation result from the Request object.
   const errors = validationResult(req);
@@ -118,9 +118,8 @@ router.post('/users', [
   } else {
       // Check if the provided email already exists or not
     const emails = await User.findOne({ where: { emailAddress: req.body.emailAddress }});
-    console.log(emails);
     if (emails) {
-      res.status(409).json({ errors: 'Provided email already in use' });
+      res.status(409).json({ errors: ['Provided email already in use'] });
     } else {
       // Hash the password 
       req.body.password = bcryptjs.hashSync(req.body.password);
@@ -174,10 +173,10 @@ router.get('/courses/:id', asyncHandler( async (req, res) => {
 // POST request to /courses to create a course
 router.post('/courses', authenticateUser, [
   check('title')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "title"'),
   check('description')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
 ], asyncHandler (async (req, res) => {
   // Attempt to get the validation result from the Request object.

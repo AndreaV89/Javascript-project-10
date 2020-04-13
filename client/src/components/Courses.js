@@ -16,7 +16,6 @@ export default class Courses extends Component {
       this.setState({
         courses: data,
       });
-      console.log(this.state.courses);
     } catch (error) {
       console.log('Error fetching and parsing data', error);
     }

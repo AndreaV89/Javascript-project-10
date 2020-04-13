@@ -25,13 +25,35 @@ export default class CoursesDetail extends Component {
     }
   }
 
+  handleDelete = e => {
+    e.preventDefault();
+    return fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`, {
+      method: 'DELETE',
+    });
+  }
+
   render() {
+    const { context } = this.props;
+    const authUser = context.authenticatedUser;
+    console.log(authUser);
+
     return (
       <div>
       <div className="actions--bar">
         <div className="bounds">
-          <div className="grid-100"><span><Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link><Link className="button" to="/">Delete Course</Link></span><Link
-              className="button button-secondary" to="/">Return to List</Link></div>
+          <div className="grid-100">
+            {authUser && authUser.id === this.state.owner.id ?
+              <React.Fragment>
+                <span>
+                  <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
+                  <Link className="button" to="/" onClick={this.handleDelete}>Delete Course</Link>
+                </span>
+                <Link className="button button-secondary" to="/">Return to List</Link>
+              </React.Fragment>
+            :
+              <Link className="button button-secondary" to="/">Return to List</Link>
+            }
+          </div>
         </div>
       </div>
       <div className="bounds course--detail">
