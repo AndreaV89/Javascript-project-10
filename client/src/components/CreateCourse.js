@@ -114,6 +114,7 @@ export default class CreateCourse extends Component {
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const psw = context.password;
+    console.log(this.props);
 
     const {
       title,

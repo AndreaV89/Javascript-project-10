@@ -153,6 +153,7 @@ export default class UpdateCourse extends Component {
 
     context.data.updateCourse(course, authUser.emailAddress, psw)
       .then( errors => {
+        console.log(errors);
         if (errors.length) {
           this.setState({ errors });
         } else {

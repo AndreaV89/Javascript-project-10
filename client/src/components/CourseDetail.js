@@ -16,11 +16,15 @@ export default class CoursesDetail extends Component {
     try {
       const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
       const data = await response.json();
-      this.setState({
-        course: data,
-        owner: data.owner,
-      });
-      console.log(this.state.owner);
+      if (response.status === 404) {
+        this.props.history.push('/notfound');
+      } else {
+        this.setState({
+          course: data,
+          owner: data.owner,
+        });
+        console.log(this.state.owner);
+      }
     } catch (error) {
       console.log('Error fetching and parsing data', error);
     }
@@ -33,6 +37,8 @@ export default class CoursesDetail extends Component {
     const authUser = context.authenticatedUser;
     const psw = context.password;
     const course = this.state.course;
+
+    console.log(psw);
 
     context.data.deleteCourse(course, authUser.emailAddress, psw)
     .then( errors => {

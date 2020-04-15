@@ -17,7 +17,7 @@ export class Provider extends Component {
   }
 
   render() {
-    const { authenticatedUser } = this.state;
+    const authenticatedUser = this.state.authenticatedUser;
     const password = this.state.password;
 
     const value = {
@@ -29,6 +29,8 @@ export class Provider extends Component {
         signOut: this.signOut,
       }
     }
+
+    console.log(this.state.password);
 
     return (
       <Context.Provider value={value}>
