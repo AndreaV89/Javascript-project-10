@@ -124,8 +124,11 @@ export default class UserSignUp extends Component {
       confirmPassword,
       errors,
     };
-
-    context.data.createUser(user)
+    
+    if (password !== confirmPassword) {
+      this.setState({ errors: ['"Password" field must match "Confirm Password" field.']})
+    } else {
+      context.data.createUser(user)
       .then( errors => {
         if (errors.length) {
           this.setState({ errors });
@@ -140,6 +143,8 @@ export default class UserSignUp extends Component {
         console.log(err);
         this.props.history.push('/error')
       })
+    }
+    
   }
 
   cancel = () => {

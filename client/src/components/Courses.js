@@ -10,14 +10,16 @@ export default class Courses extends Component {
   }
 
   async componentDidMount() {
-    try {
-      const response = await fetch('http://localhost:5000/api/courses');
-      const data = await response.json();
-      this.setState({
-        courses: data,
+    const { context } = this.props;
+    const courses = await context.data.getCourses();
+    if (courses !== null) {
+      this.setState(() => {
+        return {
+          courses: courses,
+        };
       });
-    } catch (error) {
-      console.log('Error fetching and parsing data', error);
+    } else {
+      this.props.history.push('/error');
     }
   }
   
