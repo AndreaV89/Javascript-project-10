@@ -13,19 +13,15 @@ export default class CoursesDetail extends Component {
   }
 
   async componentDidMount() {
-    try {
-      const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
-      const data = await response.json();
-      if (response.status === 404) {
-        this.props.history.push('/notfound');
-      } else {
-        this.setState({
-          course: data,
-          owner: data.owner,
-        });
-      }
-    } catch (error) {
-      console.log('Error fetching and parsing data', error);
+    const { context } = this.props;
+    const course = await context.data.getCourse(this.props.match.params.id);
+    if (course !== null) {
+      this.setState({
+        course: course,
+        owner: course.owner,
+      });
+    } else {
+      this.props.history.push('/notfound');
     }
   }
 
@@ -36,8 +32,6 @@ export default class CoursesDetail extends Component {
     const authUser = context.authenticatedUser;
     const psw = atob(context.password);
     const course = this.state.course;
-
-    console.log(psw);
 
     context.data.deleteCourse(course, authUser.emailAddress, psw)
     .then( errors => {

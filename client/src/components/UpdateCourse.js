@@ -17,31 +17,25 @@ export default class UpdateCourse extends Component {
   }
 
   async componentDidMount() {
-    try {
-      const { context } = this.props;
-      const authUser = context.authenticatedUser;
-      const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
-      const data = await response.json();
-      console.log(response.status);
-      if (data.owner.id !== authUser.id) {
-        this.props.history.push('/forbidden');
-      }
-      else if (response.status === 200) {
-        this.setState({
-          course: data,
-          owner: data.owner,
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          estimatedTime: data.estimatedTime,
-          materialsNeeded: data.materialsNeeded,
-        });
-      } else if (response.status === 404) {
-        this.props.history.push('/notfound');
-      }
-    } catch (error) {
-      console.log('Error fetching and parsing data', error);
+    const { context } = this.props;
+    const authUser = context.authenticatedUser;
+    const course = await context.data.getCourse(this.props.match.params.id);
+    if (course === null) {
+      this.props.history.push('/notfound');
     }
+    else if (course.owner.id !== authUser.id) {
+      this.props.history.push('/forbidden');
+    } else {
+      this.setState({
+        course: course,
+        owner: course.owner,
+        id: course.id,
+        title: course.title,
+        description: course.description,
+        estimatedTime: course.estimatedTime,
+        materialsNeeded: course.materialsNeeded,
+      });
+    } 
   }
 
   render() {
@@ -160,9 +154,11 @@ export default class UpdateCourse extends Component {
 
     context.data.updateCourse(course, authUser.emailAddress, psw)
       .then( errors => {
-        console.log(errors);
         if (errors === 403) {
           this.props.history.push('/forbidden');
+        }
+        else if (errors === 404) {
+          this.props.history.push('/notfound');
         }
         else if (errors.length) {
           this.setState({ errors });
