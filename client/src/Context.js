@@ -8,7 +8,7 @@ export class Provider extends Component {
 
   state = {
     authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
-    password: null
+    password: localStorage.getItem('psw') || null,
   }
 
   constructor() {
@@ -51,6 +51,8 @@ export class Provider extends Component {
       });
       // Set cookies
       Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
+      console.log(password);
+      localStorage.setItem("psw", password);
     }
 
     return user;
@@ -62,6 +64,7 @@ export class Provider extends Component {
       password: null,
     });
     Cookies.remove('authenticatedUser');
+    localStorage.removeItem("psw");
   }
 }
 
