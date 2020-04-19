@@ -79,6 +79,9 @@ export default class Data {
         return data.errors;
       });
     }
+    else if (response.status === 403) {
+      return response.status;
+    }
     else {
       throw new Error();
     }

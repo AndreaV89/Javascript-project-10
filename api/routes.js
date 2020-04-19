@@ -205,10 +205,10 @@ router.post('/courses', authenticateUser, [
 // PUT request to /courses/:id to update a course
 router.put('/courses/:id', authenticateUser, [
   check('title')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "title"'),
   check('description')
-    .exists()
+    .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "description"'),
 ], asyncHandler (async (req, res) => {
   // Attempt to get the validation result from the Request object.

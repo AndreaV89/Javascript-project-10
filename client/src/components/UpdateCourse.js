@@ -18,26 +18,33 @@ export default class UpdateCourse extends Component {
 
   async componentDidMount() {
     try {
+      const { context } = this.props;
+      const authUser = context.authenticatedUser;
       const response = await fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`);
       const data = await response.json();
-      this.setState({
-        course: data,
-        owner: data.owner,
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        estimatedTime: data.estimatedTime,
-        materialsNeeded: data.materialsNeeded,
-      });
+      console.log(response.status);
+      if (data.owner.id !== authUser.id) {
+        this.props.history.push('/forbidden');
+      }
+      else if (response.status === 200) {
+        this.setState({
+          course: data,
+          owner: data.owner,
+          id: data.id,
+          title: data.title,
+          description: data.description,
+          estimatedTime: data.estimatedTime,
+          materialsNeeded: data.materialsNeeded,
+        });
+      } else if (response.status === 404) {
+        this.props.history.push('/notfound');
+      }
     } catch (error) {
       console.log('Error fetching and parsing data', error);
     }
   }
 
   render() {
-    const { context } = this.props;
-    const authUser = context.authenticatedUser;
-
     return (
       <div className="bounds course--detail">
       <h1>Update Course</h1>
@@ -57,7 +64,7 @@ export default class UpdateCourse extends Component {
                   onChange={this.change}
                   value={this.state.title} />
               </div>
-              <p>By {authUser.firstName} {authUser.lastName}</p>
+              <p>By {this.state.owner.firstName} {this.state.owner.lastName}</p>
             </div>
             <div className="course--description">
               <div>
@@ -130,7 +137,7 @@ export default class UpdateCourse extends Component {
 
     const { context } = this.props;
     const authUser = context.authenticatedUser;
-    const psw = context.password;
+    const psw = atob(context.password);
 
     const {
       id,
@@ -154,7 +161,10 @@ export default class UpdateCourse extends Component {
     context.data.updateCourse(course, authUser.emailAddress, psw)
       .then( errors => {
         console.log(errors);
-        if (errors.length) {
+        if (errors === 403) {
+          this.props.history.push('/forbidden');
+        }
+        else if (errors.length) {
           this.setState({ errors });
         } else {
           this.props.history.push('/');

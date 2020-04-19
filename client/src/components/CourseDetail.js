@@ -23,7 +23,6 @@ export default class CoursesDetail extends Component {
           course: data,
           owner: data.owner,
         });
-        console.log(this.state.owner);
       }
     } catch (error) {
       console.log('Error fetching and parsing data', error);
@@ -35,7 +34,7 @@ export default class CoursesDetail extends Component {
 
     const { context } = this.props;
     const authUser = context.authenticatedUser;
-    const psw = context.password;
+    const psw = atob(context.password);
     const course = this.state.course;
 
     console.log(psw);
