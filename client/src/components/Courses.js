@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -9,9 +10,11 @@ export default class Courses extends Component {
     }
   }
 
+  // Get the courses when the component get mounted
   async componentDidMount() {
     const { context } = this.props;
     const courses = await context.data.getCourses();
+    // If the courses exist
     if (courses !== null) {
       this.setState(() => {
         return {
@@ -19,12 +22,14 @@ export default class Courses extends Component {
         };
       });
     } else {
+      // else redirect to /error route.
       this.props.history.push('/error');
     }
   }
   
   render() {
 
+    // Create the markup for each course in courses array
     const courses = this.state.courses.map(course => 
       <div className="grid-33" key={course.id}>
         <Link className="course--module course--link" to={`/courses/${course.id}`}>

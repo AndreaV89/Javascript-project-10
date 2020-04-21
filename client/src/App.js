@@ -1,3 +1,4 @@
+// Import modules
 import React from 'react';
 import {
   BrowserRouter,
@@ -5,6 +6,7 @@ import {
   Switch
 } from 'react-router-dom';
 
+// Import Components
 import Header from './components/Header';
 import Courses from './components/Courses';
 import CoursesDetail from './components/CourseDetail';
@@ -20,6 +22,7 @@ import PrivateRoute from './PrivateRoute';
 
 import withContext from './Context';
 
+// Give components access to context
 const UserSignUpWithContext = withContext(UserSignUp);
 const UserSignInWithContext = withContext(UserSignIn);
 const UserSignOutWithContext = withContext(UserSignOut);

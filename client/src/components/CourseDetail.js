@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
@@ -12,32 +13,43 @@ export default class CoursesDetail extends Component {
     }
   }
 
+  // Get the course when the component get mounted
   async componentDidMount() {
     const { context } = this.props;
     const course = await context.data.getCourse(this.props.match.params.id);
+    // If the course exists
     if (course !== null) {
       this.setState({
         course: course,
         owner: course.owner,
       });
     } else {
+      // else redirect to /notfound route.
       this.props.history.push('/notfound');
     }
   }
 
+  /**
+   * HandleDelete method - manage the delete button of each course.
+   */
   handleDelete = e => {
     e.preventDefault();
 
+    // Retrieve credentials for authentication from context
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const psw = atob(context.password);
+    
     const course = this.state.course;
 
+    // Call deleteCourse method from context
     context.data.deleteCourse(course, authUser.emailAddress, psw)
     .then( errors => {
       if (errors.length) {
+        // If there is errors returns them
         this.setState({ errors });
       } else {
+        // Else redirect to courses list
         this.props.history.push('/');
       }
     })
@@ -56,7 +68,8 @@ export default class CoursesDetail extends Component {
       <div className="actions--bar">
         <div className="bounds">
           <div className="grid-100">
-            {authUser && authUser.id === this.state.owner.id ?
+            {// If the authenticated user exists and is the owner of the course render 'Update Course' and 'Delete Course' buttons
+             authUser && authUser.id === this.state.owner.id ?
               <React.Fragment>
                 <span>
                   <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>

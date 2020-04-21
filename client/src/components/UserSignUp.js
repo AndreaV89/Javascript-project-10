@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -90,8 +91,9 @@ export default class UserSignUp extends Component {
     );
   }
 
-
-
+  /**
+   * change method - Helper that change the value of each component's state, as the user type.
+   */
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -103,6 +105,9 @@ export default class UserSignUp extends Component {
     });
   }
 
+  /**
+   * submit method - Handle the submit button
+   */
   submit = (e) => {
     e.preventDefault();
     const { context } = this.props;
@@ -116,6 +121,7 @@ export default class UserSignUp extends Component {
       errors,
     } = this.state;
 
+    // Create the user object with the submitted info
     const user = {
       firstName,
       lastName,
@@ -126,13 +132,17 @@ export default class UserSignUp extends Component {
     };
     
     if (password !== confirmPassword) {
+      // If the 'Password' and the 'Confirm Password' fields doesn't match return an error
       this.setState({ errors: ['"Password" field must match "Confirm Password" field.']})
     } else {
+      // Else call createUser method from context
       context.data.createUser(user)
       .then( errors => {
         if (errors.length) {
+          // If there is errors returns them
           this.setState({ errors });
         } else {
+          // Else, if the user is correctly created, sign in him and retirect to courses route
           context.actions.signIn(emailAddress, password)
             .then(() => {
               this.props.history.push('/');
@@ -147,14 +157,22 @@ export default class UserSignUp extends Component {
     
   }
 
+  /**
+   * cancel method - handle the cancel button.
+   */
   cancel = () => {
     this.props.history.push('/');
   }
 };
 
+/**
+ * ErrorDisplay function - Function that renders errors if there are any.
+ * @param {object} errors - An object of errors. 
+ */
 function ErrorsDisplay({ errors }) {
   let errorsDisplay = null;
 
+  // If there are at least one error render, create the markup
   if (errors.length) {
     errorsDisplay = (
       <div>

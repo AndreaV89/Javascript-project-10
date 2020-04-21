@@ -18,6 +18,7 @@ export default class CreateCourse extends Component {
       errors,
     } = this.state;
 
+    // Retrieve authenticated user from context
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     
@@ -97,6 +98,9 @@ export default class CreateCourse extends Component {
     );
   }
 
+  /**
+   * change method - Helper that change the value of each component's state, as the user type.
+   */
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -108,9 +112,13 @@ export default class CreateCourse extends Component {
     });
   }
 
+  /**
+   * submit method - Handle the submit button
+   */
   submit = (e) => {
     e.preventDefault();
 
+    // Retrieve credentials for authentication from context
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const psw = atob(context.password);
@@ -123,6 +131,7 @@ export default class CreateCourse extends Component {
       errors,
     } = this.state;
 
+    // Create the course object with the submitted info
     const course = {
       title,
       description,
@@ -132,11 +141,14 @@ export default class CreateCourse extends Component {
       errors,
     };
 
+    // Call createCourse method from context
     context.data.createCourse(course, authUser.emailAddress, psw)
       .then( errors => {
         if (errors.length) {
+          // If there is errors returns them
           this.setState({ errors });
         } else {
+          // Else redirect to courses list
           this.props.history.push('/');
         }
       })
@@ -146,14 +158,23 @@ export default class CreateCourse extends Component {
       })
   } 
 
+  /**
+   * cancel method - handle the cancel button.
+   */
   cancel = () => {
+    // Redirect to courses list
     this.props.history.push('/');
   }
 };
 
+/**
+ * ErrorDisplay function - Function that renders errors if there are any.
+ * @param {object} errors - An object of errors. 
+ */
 function ErrorsDisplay({ errors }) {
   let errorsDisplay = null;
 
+  // If there are at least one error render, create the markup
   if (errors.length) {
     errorsDisplay = (
       <div>

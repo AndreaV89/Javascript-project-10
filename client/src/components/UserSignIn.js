@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -54,6 +55,9 @@ export default class UserSignIn extends Component {
     );
   }
 
+  /**
+   * change method - Helper that change the value of each component's state, as the user type.
+   */
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -65,19 +69,25 @@ export default class UserSignIn extends Component {
     });
   }
 
+  /**
+   * submit method - Handle the submit button
+   */
   submit = (e) => {
     e.preventDefault();
     const { context } = this.props;
     const { from } = this.props.location.state || { from: { pathname: '/' } };
     const { emailAddress, password } = this.state;
 
+    // Call signIn method from context
     context.actions.signIn(emailAddress, password)
       .then( user => {
         if (user === null) {
+          // If the user not exists return an error
           this.setState(() => {
             return { errors: [ 'Sign-in was unsuccessful' ] };
           });
         } else {
+          // Else redirect to previous location if there are
           this.props.history.push(from);
         }
       })
@@ -87,14 +97,22 @@ export default class UserSignIn extends Component {
       })
   }
 
+  /**
+   * cancel method - handle the cancel button.
+   */
   cancel = () => {
     this.props.history.push('/');
   }
 };
 
+/**
+ * ErrorDisplay function - Function that renders errors if there are any.
+ * @param {object} errors - An object of errors. 
+ */
 function ErrorsDisplay({ errors }) {
   let errorsDisplay = null;
 
+  // If there are at least one error render, create the markup
   if (errors.length) {
     errorsDisplay = (
       <div>

@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import Data from './Data';
@@ -37,7 +38,7 @@ export class Provider extends Component {
     );
   }
 
-  
+  // SignIn method - return the user that have provided emailAddress and password
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
     if (user !== null) {
@@ -55,6 +56,7 @@ export class Provider extends Component {
     return user;
   }
 
+  // SignOut method - Set authenticatedUser and password to null and remove cookies
   signOut = () => {
     this.setState({ 
       authenticatedUser: null,

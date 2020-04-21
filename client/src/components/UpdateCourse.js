@@ -16,16 +16,20 @@ export default class UpdateCourse extends Component {
     }
   }
 
+  // Get the course when the component get mounted
   async componentDidMount() {
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const course = await context.data.getCourse(this.props.match.params.id);
     if (course === null) {
+      // If the course not exist redirect to /notfound route
       this.props.history.push('/notfound');
     }
     else if (course.owner.id !== authUser.id) {
+      // If the current user is not the owner of the course redirect to /forbidden route
       this.props.history.push('/forbidden');
     } else {
+      // else set the state with the information about the selected course
       this.setState({
         course: course,
         owner: course.owner,
@@ -115,6 +119,9 @@ export default class UpdateCourse extends Component {
     );
   }
 
+  /**
+   * change method - Helper that change the value of each component's state, as the user type.
+   */
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -126,9 +133,13 @@ export default class UpdateCourse extends Component {
     });
   }
 
+  /**
+   * submit method - Handle the submit button
+   */
   submit = (e) => {
     e.preventDefault();
 
+    // Retrieve credentials for authentication from context
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const psw = atob(context.password);
@@ -142,6 +153,7 @@ export default class UpdateCourse extends Component {
       errors,
     } = this.state;
 
+    // Create the course object with the new info
     const course = {
       id,
       title,
@@ -152,18 +164,23 @@ export default class UpdateCourse extends Component {
       errors,
     };
 
+    // Call updateCourse method from context
     context.data.updateCourse(course, authUser.emailAddress, psw)
       .then( errors => {
         if (errors === 403) {
+          // If the user is not authorized redirect to /forbidden route
           this.props.history.push('/forbidden');
         }
         else if (errors === 404) {
+          // If the course doesn't exist redirect to /notfound route
           this.props.history.push('/notfound');
         }
         else if (errors.length) {
+          // If there is errors returns them
           this.setState({ errors });
         } else {
-          this.props.history.push('/');
+          // Else redirect to updated course
+          this.props.history.push(`/courses/${this.state.course.id}`);
         }
       })
       .catch( err => {
@@ -172,14 +189,22 @@ export default class UpdateCourse extends Component {
       })
   } 
 
+  /**
+   * cancel method - handle the cancel button.
+   */
   cancel = () => {
     this.props.history.push(`/courses/${this.state.course.id}`);
   }
 };
 
+/**
+ * ErrorDisplay function - Function that renders errors if there are any.
+ * @param {object} errors - An object of errors. 
+ */
 function ErrorsDisplay({ errors }) {
   let errorsDisplay = null;
 
+  // If there are at least one error render, create the markup
   if (errors.length) {
     errorsDisplay = (
       <div>
