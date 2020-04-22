@@ -41,16 +41,17 @@ export class Provider extends Component {
   // SignIn method - return the user that have provided emailAddress and password
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
+    const encodedPassword = btoa(password);
     if (user !== null) {
       this.setState(() => {
         return {
           authenticatedUser: user,
-          password: password,
+          password: encodedPassword,
         };
       });
       // Set cookies
       Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
-      Cookies.set("psw", btoa(this.state.password), { expires: 1 });
+      Cookies.set("psw", encodedPassword, { expires: 1 });
     }
 
     return user;
